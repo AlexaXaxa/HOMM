@@ -21,19 +21,30 @@ namespace HOMM
     {
         #region fält
         Tile[,] map;
-        //может поменяться в зависимости от размера экрана
-        int viewSize_Box = 10;
+        int viewSize_Box;
         static int sizeOfMap_Box = 7;
         int cameraX = (int)sizeOfMap_Box/2;
         int cameraY = (int)sizeOfMap_Box/2;
         int heroX = 3;
         int heroY = 1;
-        int ViewSquare_Px;
         int sizeOfSquare_Px = 40;
-        #endregion
+        int toggle = 1;
+        int day = 0;
+        int week = 0;
+        int month = 0;
+        private IGameMode mode;
+       
+        static BattleState battleState;
 
+        #endregion
+        public void SetView(UserControl view)
+        {
+            GameRoot.Children.Clear();
+            GameRoot.Children.Add(view);
+        }
         public MainWindow()
         {
+
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
 
@@ -45,7 +56,7 @@ namespace HOMM
             this.KeyDown += _KeyDown;
 
         }
-        
+
 
         private void MoveHero(object sender, RoutedEventArgs e)
         {
@@ -53,18 +64,29 @@ namespace HOMM
             int new_heroX = border.Tile.Coords.Item1;
             int new_heroY = border.Tile.Coords.Item2;
 
-            Tile test_tile = map[new_heroX, new_heroY];
+            Tile new_tile = map[new_heroX, new_heroY];
 
-            if ((test_tile.Type != TileType.Water) && (test_tile.Type != TileType.Forest) && (test_tile.Type != TileType.Castle))
+            if((new_tile.Type == TileType.Water) || (new_tile.Type == TileType.Forest) || (new_tile.Type == TileType.Castle))
+            {
+
+            }
+            else if(new_tile.Type == TileType.Grass)
             {
                 map[heroX, heroY] = new Tile(TileType.Grass, new Tuple<int, int>(heroX, heroY));
                 heroX = new_heroX;
                 heroY = new_heroY;
                 map[heroX, heroY] = new Tile(TileType.Hero, new Tuple<int, int>(heroX, heroY));
-
+                mode.Draw();
+            }
+            else if (new_tile.Type == TileType.Enemy)
+            {
+                mode = battleState;
+                mode.Draw();
             }
 
-            DrawMap();
+
+             
+          
         }
         private void _KeyDown(object sender, KeyEventArgs e)
         {
@@ -83,9 +105,9 @@ namespace HOMM
 
             if (pos.Y <= 0) // вверх
                 cameraY--;            
-            else if (pos.Y >= uniformGrid.ActualHeight - 10) //вниз
+            else if (pos.Y >= GameRoot.Height - 1) //вниз
                 cameraY++;            
-            if (pos.X >= uniformGrid.ActualWidth) // вправо
+            if (pos.X >= GameRoot.Width) // вправо
                 cameraX++;             
             else if (pos.X <= 0) // влево
                 cameraX--;
@@ -93,92 +115,26 @@ namespace HOMM
             DrawMap();
      
         }
-        public void DrawNumber(CustomBorder b)
-        {
-            TextBlock t = new TextBlock();
-            t.FontSize = 15;
-            t.Text = b.Tile.Coords.Item1 + b.Tile.Coords.Item2.ToString();
-            b.Child = t;
-        }
-        public void DrawMap()
-        {
-            uniformGrid.Children.Clear();
-
-            map[heroX, heroY] = new Tile(TileType.Hero, new Tuple<int, int>(heroX, heroY));
-
-            for (int y = 0; y < viewSize_Box; y++)
-            {
-                for (int x = 0; x < viewSize_Box; x++)
-                {
-
-                    int mapX = cameraX + x - viewSize_Box / 2;
-                    int mapY = cameraY + y - viewSize_Box / 2;
-
-                    CustomBorder b = new CustomBorder();     
-                    b.Width = sizeOfSquare_Px;
-                    b.Height = sizeOfSquare_Px;
-                    b.BorderThickness = new Thickness(1);
-                    b.BorderBrush = Brushes.Black;
-
-                    
-
-                    
-
-                    if (mapX < 0 || mapX >= sizeOfMap_Box || mapY < 0 || mapY >= sizeOfMap_Box)
-                    {
-                        b.Background = Brushes.Gray; // пустое место за пределами карты
-                    }
-                    else
-                    {
-                        Tile tile = map[mapX, mapY];
-                        b.Tile = tile;
-                        b.AddHandler(Border.MouseLeftButtonDownEvent, new RoutedEventHandler(MoveHero), true);
-
-                        switch (tile.Type)
-                        {
-                            case TileType.Grass:
-                                b.Background = Brushes.LightGreen;
-                                DrawNumber(b);
-                                break;
-                            case TileType.Water:
-                                b.Background = Brushes.Blue;
-                                DrawNumber(b);
-                                break;
-                            case TileType.Forest:
-                                b.Background = Brushes.DarkGreen;
-                                DrawNumber(b);
-                                break;
-                            case TileType.Castle:
-                                b.Background = Brushes.Violet;
-                                DrawNumber(b);
-                                break;
-                            case TileType.Enemy:
-                                b.Background = Brushes.Red;
-                                DrawNumber(b);
-                                break;
-                            case TileType.Hero:
-                                b.Background = Brushes.Violet;
-                                DrawNumber(b);
-                                break;
-                        }
-                    }
-                    uniformGrid.Children.Add(b);
-                }
-            }
-        }
+       
+       
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             double windowWidth = this.ActualWidth;
             double windowHeight = this.ActualHeight;
             Console.WriteLine($"Ширина: {windowWidth}, Высота: {windowHeight}");
             //minimum side of screen
-            double minSide  = Math.Min(this.ActualWidth, this.ActualHeight);
-            
-            ViewSquare_Px = (int)minSide;
-            viewSize_Box = (int)(ViewSquare_Px / sizeOfSquare_Px);
-            
+            double squareSize  = Math.Min(windowWidth, windowHeight);
+            double infoWidth = squareSize * 0.3;
+
+            GameRoot.Width = squareSize + infoWidth;
+            GameRoot.Height = squareSize;
+
             map = CreateTestMap();
-            DrawMap();
+
+            AdventureState adventureState = new AdventureState(map);
+            mode = adventureState;
+
+          
         }
         Tile[,] CreateTestMap()
         {
@@ -228,6 +184,53 @@ namespace HOMM
             map[2, 2] = new Tile(TileType.Castle, new Tuple<int, int>(2, 2));
 
             return map;
+        }
+        private void HeroFocus_click(object sender, RoutedEventArgs e)
+        {
+            cameraX = heroX;
+            cameraY = heroY;
+            DrawMap();
+        }
+        public void OnPanelClick(object sender, MouseButtonEventArgs e)
+        {
+            switch (toggle)
+            {
+                case 0:
+                    DayPanel.Visibility = Visibility.Collapsed;
+                    toggle++;
+                    UnitsPanel.Visibility = Visibility.Visible;
+                    break;
+                case 1:
+                    UnitsPanel.Visibility = Visibility.Collapsed;
+                    ResourcesPanel.Visibility = Visibility.Visible;
+                    toggle++;
+                    break;
+                case 2:
+                    ResourcesPanel.Visibility = Visibility.Collapsed;
+                    toggle = 0;
+                    DayPanel.Visibility = Visibility.Visible;
+                    break;
+
+
+            }
+            
+        }
+        private void NextDay_click(object sender, RoutedEventArgs e)
+        {
+            day++;
+            if(day>7)
+            {
+                day = 0;
+                week++;
+            }
+            if(week>3)
+            {
+                week = 0;
+                month++;
+            }
+            Day.Text = day.ToString();
+            Week.Text = week.ToString();
+            Month.Text = month.ToString();
         }
     }
 }

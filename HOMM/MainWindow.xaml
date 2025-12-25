@@ -10,15 +10,21 @@
         ResizeMode="NoResize"
         WindowStyle="None"
         Height=" 500"
-        Width="500
-        ">
+        Width="500"
+        Background="Black"
+        >
+    
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center">
 
-    <Grid Background="Black">
-        <UniformGrid Grid.Column="0" Name="uniformGrid"
-         HorizontalAlignment="Center"
-         VerticalAlignment="Center"
-/>
+        <!-- Корень игры -->
+        <Grid x:Name="GameRoot">
+            
+           
+        </Grid>
+
     </Grid>
+   
 
 
 </Window>

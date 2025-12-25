@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="HOMM.AdventureView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HOMM"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="MapColumn"/>
+            <ColumnDefinition x:Name="InfoColumn"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- КВАДРАТ ИГРЫ -->
+        <Border x:Name="MapSquare"
+         Grid.Column="0"
+         Background="#222">
+            <UniformGrid Grid.Column="0" Name="uniformGrid"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"/>
+        </Border>
+
+        <!-- ПАНЕЛЬ ИНФОРМАЦИИ -->
+        <Border x:Name="InfoPanel"
+         Grid.Column="1"
+         Background="#333">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <!-- Map-->
+                <TextBlock Background="White" Grid.Row="0" Text="Map"/>
+                <!--Heroes and castles-->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <ScrollViewer Grid.Column="0">
+                        <StackPanel x:Name="Heroes" Background="White" Orientation="Vertical">
+                            <Image Source="/img/hero1.png"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <ScrollViewer Grid.Column="1">
+                        <TextBlock Background="White" Text="castles" />
+                    </ScrollViewer>
+                </Grid>
+                <!-- Units and resourses-->
+                <Grid  Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="5*"/>
+                    </Grid.RowDefinitions>
+                    <!-- buttons-->
+                    <UniformGrid Grid.Row="0" Rows="2" Columns="4">
+                        <Button Content="hero" Click="HeroFocus_click"/>
+                        <Button/>
+                        <Button/>
+                        <Button/>
+                        <Button Content="next day" Click="NextDay_click"/>
+                        <Button/>
+                        <Button/>
+                        <Button/>
+                    </UniformGrid>
+                    <!-- units/resourses/day -->
+                    <Grid Background="White" MouseLeftButtonDown="OnPanelClick" Grid.Row="1">
+                        <!-- Юниты -->
+                        <UniformGrid x:Name="UnitsPanel">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="полурослики " HorizontalAlignment="Center"/>
+                                <TextBlock Text="10"/>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <!-- Ресурсы -->
+                        <UniformGrid x:Name="ResourcesPanel" Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock Text="Castle" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Village" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Gold" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Tree" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="нефть" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="какашки" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="песочек" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="кристалы" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="кристалики" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </UniformGrid>
+                        <!-- Day -->
+                        <UniformGrid x:Name="DayPanel" Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Month " HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="Month" Text="0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Week " HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="Week" Text="0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Day " HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="Day" Text="0"/>
+                            </StackPanel>
+                        </UniformGrid>
+
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

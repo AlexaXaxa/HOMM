@@ -21,10 +21,12 @@ namespace HOMM
     {
         public TileType Type { get; set; }
         public Tuple<int, int> Coords;
+       
         public Tile(TileType type, Tuple<int, int> coords)
         {
             Type = type;
             Coords = coords;
+            
         }
         
     }
