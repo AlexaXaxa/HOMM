@@ -13,15 +13,11 @@
         Width="500"
         Background="Black"
         >
-    
+
     <Grid HorizontalAlignment="Center"
           VerticalAlignment="Center">
-
         <!-- Корень игры -->
-        <Grid x:Name="GameRoot">
-            
-           
-        </Grid>
+        <Grid  x:Name="GameRoot" />
 
     </Grid>
    

@@ -57,17 +57,17 @@
                     </Grid.RowDefinitions>
                     <!-- buttons-->
                     <UniformGrid Grid.Row="0" Rows="2" Columns="4">
-                        <Button Content="hero" Click="HeroFocus_click"/>
+                        <Button Content="hero" />
                         <Button/>
                         <Button/>
                         <Button/>
-                        <Button Content="next day" Click="NextDay_click"/>
+                        <Button Content="next day"/>
                         <Button/>
                         <Button/>
                         <Button/>
                     </UniformGrid>
                     <!-- units/resourses/day -->
-                    <Grid Background="White" MouseLeftButtonDown="OnPanelClick" Grid.Row="1">
+                    <Grid Background="White" Grid.Row="1">
                         <!-- Юниты -->
                         <UniformGrid x:Name="UnitsPanel">
                             <StackPanel Orientation="Horizontal">

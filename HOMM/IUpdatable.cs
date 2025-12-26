@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace HOMM
 {
-    //побег, магия
-    interface ICombatAction
+    internal interface IUpdatable
     {
-        void Execute(Hero hero);
+        void Update();
+        void Draw();
     }
-
 }
