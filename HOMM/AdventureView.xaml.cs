@@ -32,7 +32,7 @@ namespace HOMM
         int CameraX;
         int CameraY;
         int MapSize_Tile;
-        public event Action? EnemyEncountered;
+        public event EventHandler EnemyEncountered;
         public AdventureView(Tile[,] map, double minimumSizeOfsceen, int tileSize_Px, int mapSize_Tile)
         {
             InitializeComponent();
@@ -60,11 +60,23 @@ namespace HOMM
             Draw();
         }
 
-        public void DrawNumber(CustomBorder b)
+        public void DisplayInfo(CustomBorder b)
         {
             TextBlock t = new TextBlock();
             t.FontSize = 15;
             t.Text = b.Tile.Coords.Item1 + "," + b.Tile.Coords.Item2.ToString();
+            if (b.Tile.Type == TileType.Enemy)
+            {
+                StackPanel p = new StackPanel();
+                b.Child = p;
+                TextBlock t2 = new TextBlock();
+                t2.FontSize = 7;
+                t2.Text = b.Tile.EnemyType + " " + b.Tile.TroopsCount;
+                p.Children.Add(t);
+                p.Children.Add(t2);
+                return;
+
+            }        
             b.Child = t;
         }
         public void Draw()
@@ -102,27 +114,27 @@ namespace HOMM
                         {
                             case TileType.Grass:
                                 b.Background = Brushes.LightGreen;
-                                DrawNumber(b);
+                                DisplayInfo(b);
                                 break;
                             case TileType.Water:
                                 b.Background = Brushes.Blue;
-                                DrawNumber(b);
+                                DisplayInfo(b);
                                 break;
                             case TileType.Forest:
                                 b.Background = Brushes.DarkGreen;
-                                DrawNumber(b);
+                                DisplayInfo(b);
                                 break;
                             case TileType.Castle:
                                 b.Background = Brushes.Violet;
-                                DrawNumber(b);
+                                DisplayInfo(b);
                                 break;
                             case TileType.Enemy:
                                 b.Background = Brushes.Red;
-                                DrawNumber(b);
+                                DisplayInfo(b);
                                 break;
                             case TileType.Hero:
                                 b.Background = Brushes.Violet;
-                                DrawNumber(b);
+                                DisplayInfo(b);
                                 break;
                         }
                     }
@@ -153,7 +165,7 @@ namespace HOMM
                 }
                 else if (new_tile.Type == TileType.Enemy)
                 {
-                    EnemyEncountered?.Invoke();
+                    EnemyEncountered?.Invoke(new_tile, e);
                 }
             }
         }

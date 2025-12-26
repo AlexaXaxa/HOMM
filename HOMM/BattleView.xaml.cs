@@ -27,14 +27,20 @@ namespace HOMM
         int viewYSize_Tile;
         int viewXSize_Tile;
         int TileSize_Px;
-        public BattleView(int tileSize_Px, double YGameRoot_Px, double XGameRoot_Px)
+        TileType EnemyType;
+        int TroopsCount;
+
+        public BattleView(int tileSize_Px, double YGameRoot_Px, double XGameRoot_Px, Tile tile)
         {
             InitializeComponent();
 
             TileSize_Px = tileSize_Px;
             viewYSize_Tile = (int)((YGameRoot_Px) / TileSize_Px);
             viewXSize_Tile = (int)((XGameRoot_Px) / TileSize_Px);
-        
+
+            EnemyType = tile.EnemyType;
+            TroopsCount = tile.TroopsCount;
+
             this.Loaded += BattleView_Loaded;
         }
 
@@ -43,6 +49,7 @@ namespace HOMM
             uniformGrid.Rows = viewYSize_Tile;
             uniformGrid.Columns = viewXSize_Tile;
             Map = CreateBattleMap();
+            CreateEnemyMap();
             Draw();
         }
 
@@ -113,10 +120,40 @@ namespace HOMM
                                 DrawNumber(b);
                                 break;
                         }
+                        Image Img = new Image();
+                        BitmapImage myBitmapImage = new BitmapImage();
+                        switch (tile.EnemyType)
+                        {
+                            case TileType.Skeletton:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\skeletton.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
+                                break;
+                            case TileType.Mummy:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\mummy.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
+                                break;
+                        }
+                            
                     }
                     uniformGrid.Children.Add(b);
                 }
             }
+        }
+        public void CreateEnemyMap()
+        {
+            for (int y = 0; y < viewYSize_Tile; y=y+4)
+            {
+                Map[viewXSize_Tile - 2, y] = new Tile(TileType.Enemy, new Tuple<int, int>(viewXSize_Tile, y), EnemyType);
+            }
+            
+            int stack = TroopsCount/ viewYSize_Tile;
+
         }
         Tile[,] CreateBattleMap()
         {
@@ -132,12 +169,6 @@ namespace HOMM
                     map[x, y] = new Tile(TileType.Grass, new Tuple<int, int>(x, y));
                 }
             }
-
-            //Enemy
-            map[21, 1] = new Tile(TileType.Enemy, new Tuple<int, int>(21, 1));
-            map[21, 3] = new Tile(TileType.Enemy, new Tuple<int, int>(21, 3));
-
-
             return map;
         }
     }

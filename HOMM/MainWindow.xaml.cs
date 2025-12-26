@@ -22,12 +22,13 @@ namespace HOMM
      
         IUpdatable? currentView;
         AdventureView? adventureView;
-        BattleView? battleView; 
-
+        BattleView? battleView;
+      
         public MainWindow()
         {
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
+            
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -42,13 +43,22 @@ namespace HOMM
 
             adventureView = new AdventureView(map, minimumSideOfsceen, tileSize_Px, mapSize_Tile);
             SetView(adventureView);
-            adventureView.EnemyEncountered += () =>
-            {
-                battleView = new BattleView(tileSize_Px, GameRoot.Height, GameRoot.Width);
-                SetView(battleView);
-            };
+            adventureView.EnemyEncountered += EnemyEncountered;
+
+
+            //adventureView.EnemyEncountered += () =>
+            //{
+            //    battleView = new BattleView(tileSize_Px, GameRoot.Height, GameRoot.Width);
+            //    SetView(battleView);
+            //};
 
             StartTimer();
+        }
+        void EnemyEncountered(object? sender, EventArgs e)
+        {
+            Tile tile = sender as Tile;
+            battleView = new BattleView(tileSize_Px, GameRoot.Height, GameRoot.Width, tile);
+            SetView(battleView);
         }
         void StartTimer()
         {
@@ -83,7 +93,8 @@ namespace HOMM
             }
 
             //Enemy
-            map[5, 1] = new Tile(TileType.Enemy, new Tuple<int, int>(5, 1));
+            map[5, 1] = new Tile(TileType.Enemy, new Tuple<int, int>(5, 1), TileType.Skeletton, 9);
+            map[6, 2] = new Tile(TileType.Enemy, new Tuple<int, int>(6, 2), TileType.Mummy, 9);
 
             //Water
             map[6, 6] = new Tile(TileType.Water, new Tuple<int, int>(6, 6));
