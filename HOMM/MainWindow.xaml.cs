@@ -29,30 +29,24 @@ namespace HOMM
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
             
+
         }
+     
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             double windowWidth = this.ActualWidth;
             double windowHeight = this.ActualHeight;
             double minimumSideOfsceen  = Math.Min(windowWidth, windowHeight);
-
             GameRoot.Width = minimumSideOfsceen + minimumSideOfsceen*0.3;
             GameRoot.Height = minimumSideOfsceen;
 
             map = CreateTestMap();
-
             adventureView = new AdventureView(map, minimumSideOfsceen, tileSize_Px, mapSize_Tile);
+
             SetView(adventureView);
             adventureView.EnemyEncountered += EnemyEncountered;
-
-
-            //adventureView.EnemyEncountered += () =>
-            //{
-            //    battleView = new BattleView(tileSize_Px, GameRoot.Height, GameRoot.Width);
-            //    SetView(battleView);
-            //};
-
             StartTimer();
+            
         }
         void EnemyEncountered(object? sender, EventArgs e)
         {
@@ -88,43 +82,48 @@ namespace HOMM
             {
                 for (int x = 0; x < sizeOfMap; x++)
                 {
-                    map[x, y] = new Tile(TileType.Grass, new Tuple<int, int>(x, y));
+                    map[x, y] = new Tile(TileSkin.Grass, new Tuple<int, int>(x, y));
                 }
             }
 
-            //Enemy
-            map[5, 1] = new Tile(TileType.Enemy, new Tuple<int, int>(5, 1), TileType.Skeletton, 9);
-            map[6, 2] = new Tile(TileType.Enemy, new Tuple<int, int>(6, 2), TileType.Mummy, 9);
+            #region Enemy
+            map[5, 1] = new Tile(TileSkin.Skeletton, new Tuple<int, int>(5, 1), new Stack(EnemyType.Skeletton, 9));
+            map[6, 2] = new Tile(TileSkin.Mummy, new Tuple<int, int>(6, 2), new Stack(EnemyType.Mummy, 9));
+            map[3, 5] = new Tile(TileSkin.Vampire, new Tuple<int, int>(3, 5), new Stack(EnemyType.Vampire, 9));
+            #endregion
 
-            //Water
-            map[6, 6] = new Tile(TileType.Water, new Tuple<int, int>(6, 6));
-            map[6, 5] = new Tile(TileType.Water, new Tuple<int, int>(6, 5));
-            map[6, 4] = new Tile(TileType.Water, new Tuple<int, int>(6, 4));
-            map[5, 6] = new Tile(TileType.Water, new Tuple<int, int>(5, 6));
-            map[5, 5] = new Tile(TileType.Water, new Tuple<int, int>(5, 5));
-            map[4, 6] = new Tile(TileType.Water, new Tuple<int, int>(4, 6));
+            #region Water
+            map[6, 6] = new Tile(TileSkin.Water, new Tuple<int, int>(6, 6));
+            map[6, 5] = new Tile(TileSkin.Water, new Tuple<int, int>(6, 5));
+            map[6, 4] = new Tile(TileSkin.Water, new Tuple<int, int>(6, 4));
+            map[5, 6] = new Tile(TileSkin.Water, new Tuple<int, int>(5, 6));
+            map[5, 5] = new Tile(TileSkin.Water, new Tuple<int, int>(5, 5));
+            map[4, 6] = new Tile(TileSkin.Water, new Tuple<int, int>(4, 6));
+            #endregion
 
-            //Forest
-            map[0, 6] = new Tile(TileType.Forest, new Tuple<int, int>(0, 6));
-            map[0, 5] = new Tile(TileType.Forest, new Tuple<int, int>(0, 5));
-            map[0, 4] = new Tile(TileType.Forest, new Tuple<int, int>(0, 4));
-            map[1, 6] = new Tile(TileType.Forest, new Tuple<int, int>(1, 6));
-            map[1, 5] = new Tile(TileType.Forest, new Tuple<int, int>(1, 5));
-            map[2, 6] = new Tile(TileType.Forest, new Tuple<int, int>(2, 6));
-            map[0, 3] = new Tile(TileType.Forest, new Tuple<int, int>(0, 3));
-            map[1, 4] = new Tile(TileType.Forest, new Tuple<int, int>(1, 4));
-            map[1, 3] = new Tile(TileType.Forest, new Tuple<int, int>(1, 3));
+            #region Forest
+            map[0, 6] = new Tile(TileSkin.Forest, new Tuple<int, int>(0, 6));
+            map[0, 5] = new Tile(TileSkin.Forest, new Tuple<int, int>(0, 5));
+            map[0, 4] = new Tile(TileSkin.Forest, new Tuple<int, int>(0, 4));
+            map[1, 6] = new Tile(TileSkin.Forest, new Tuple<int, int>(1, 6));
+            map[1, 5] = new Tile(TileSkin.Forest, new Tuple<int, int>(1, 5));
+            map[2, 6] = new Tile(TileSkin.Forest, new Tuple<int, int>(2, 6));
+            map[0, 3] = new Tile(TileSkin.Forest, new Tuple<int, int>(0, 3));
+            map[1, 4] = new Tile(TileSkin.Forest, new Tuple<int, int>(1, 4));
+            map[1, 3] = new Tile(TileSkin.Forest, new Tuple<int, int>(1, 3));
+            #endregion
 
-            //Castle
-            map[0, 0] = new Tile(TileType.Castle, new Tuple<int, int>(0, 0));
-            map[0, 1] = new Tile(TileType.Castle, new Tuple<int, int>(0, 1));
-            map[0, 2] = new Tile(TileType.Castle, new Tuple<int, int>(0, 2));
-            map[1, 0] = new Tile(TileType.Castle, new Tuple<int, int>(1, 0));
-            map[1, 1] = new Tile(TileType.Castle, new Tuple<int, int>(1, 1));
-            map[1, 2] = new Tile(TileType.Castle, new Tuple<int, int>(1, 2));
-            map[2, 0] = new Tile(TileType.Castle, new Tuple<int, int>(2, 0));
-            map[2, 1] = new Tile(TileType.Castle, new Tuple<int, int>(2, 1));
-            map[2, 2] = new Tile(TileType.Castle, new Tuple<int, int>(2, 2));
+            #region Castle
+            map[0, 0] = new Tile(TileSkin.Castle, new Tuple<int, int>(0, 0));
+            map[0, 1] = new Tile(TileSkin.Castle, new Tuple<int, int>(0, 1));
+            map[0, 2] = new Tile(TileSkin.Castle, new Tuple<int, int>(0, 2));
+            map[1, 0] = new Tile(TileSkin.Castle, new Tuple<int, int>(1, 0));
+            map[1, 1] = new Tile(TileSkin.Castle, new Tuple<int, int>(1, 1));
+            map[1, 2] = new Tile(TileSkin.Castle, new Tuple<int, int>(1, 2));
+            map[2, 0] = new Tile(TileSkin.Castle, new Tuple<int, int>(2, 0));
+            map[2, 1] = new Tile(TileSkin.Castle, new Tuple<int, int>(2, 1));
+            map[2, 2] = new Tile(TileSkin.Castle, new Tuple<int, int>(2, 2));
+            #endregion
 
             return map;
         }

@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace HOMM
 {
-    public enum TileType 
+    public enum TileSkin
     { 
         Grass, 
         Water,
@@ -17,24 +17,36 @@ namespace HOMM
         Enemy,
         Skeletton, 
         Mummy,
+        Vampire,
 
         Hero
     }
     public class Tile
     {
-        public TileType Type { get; set; }
-        public Tuple<int, int> Coords;
-        public int TroopsCount{get;set;}
-        public TileType EnemyType;
+        public TileSkin Skin { get; set; }
+        public Tuple<int, int> Coords;      
+        public IStack EnemyStack { get; set; }
 
-        public Tile(TileType type, Tuple<int, int> coords,TileType enemyType = 0, int troopsCount = 0)
+        public Tile(TileSkin type, Tuple<int, int> coords, IStack stack = null)
         {
-            Type = type;
+            Skin = type;
             Coords = coords;
-            if (troopsCount >= 9)
-                TroopsCount = troopsCount;
-            EnemyType = enemyType;
+            EnemyStack = stack;
+           
+            if(stack != null)
+            {
+                CreateTroops();
+            }
         }
-        
+        void CreateTroops()
+        {
+            //if(EnemyType == Mummy)
+            //{
+            //    Mummy mummy = new Mummy();
+                
+            //}
+        }
+
+
     }
 }

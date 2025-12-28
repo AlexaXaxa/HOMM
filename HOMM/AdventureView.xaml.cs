@@ -14,7 +14,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using static System.Net.Mime.MediaTypeNames;
+//using static System.Net.Mime.MediaTypeNames;
 
 namespace HOMM
 {
@@ -38,14 +38,16 @@ namespace HOMM
             InitializeComponent();
             viewSize_Px = minimumSizeOfsceen;
             this.tileSize_Px = tileSize_Px;
+            //Adventure map
             Map = map;
             CameraX = (int)mapSize_Tile / 2;
             CameraY = (int)mapSize_Tile / 2;
             MapSize_Tile = mapSize_Tile;
 
             this.Loaded += AdventureView_Loaded;
+          
+       
         }
-
         private void AdventureView_Loaded(object sender, RoutedEventArgs e)
         {
             double infoWidth = viewSize_Px * 0.3;
@@ -58,6 +60,17 @@ namespace HOMM
             viewSize_Tile = (int)(viewSize_Px / tileSize_Px);
 
             Draw();
+            var window = Window.GetWindow(this);
+            window.KeyDown += HeroFocus;
+        }
+
+        private void HeroFocus(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.H)
+            {
+                CameraX = heroX;
+                CameraY = heroY;
+            }
         }
 
         public void DisplayInfo(CustomBorder b)
@@ -65,13 +78,13 @@ namespace HOMM
             TextBlock t = new TextBlock();
             t.FontSize = 15;
             t.Text = b.Tile.Coords.Item1 + "," + b.Tile.Coords.Item2.ToString();
-            if (b.Tile.Type == TileType.Enemy)
+            if (b.Tile.Skin == TileSkin.Enemy)
             {
                 StackPanel p = new StackPanel();
                 b.Child = p;
                 TextBlock t2 = new TextBlock();
                 t2.FontSize = 7;
-                t2.Text = b.Tile.EnemyType + " " + b.Tile.TroopsCount;
+                t2.Text = b.Tile.EnemyStack.Type + " " + b.Tile.EnemyStack.Amount;
                 p.Children.Add(t);
                 p.Children.Add(t2);
                 return;
@@ -83,7 +96,7 @@ namespace HOMM
         {
             uniformGrid.Children.Clear();
 
-            Map[heroX, heroY] = new Tile(TileType.Hero, new Tuple<int, int>(heroX, heroY));
+            Map[heroX, heroY] = new Tile(TileSkin.Hero, new Tuple<int, int>(heroX, heroY));
 
             for (int y = 0; y < viewSize_Tile; y++)
             {
@@ -109,32 +122,62 @@ namespace HOMM
                         Tile tile = Map[mapX, mapY];
                         b.Tile = tile;
                         b.AddHandler(Border.MouseLeftButtonDownEvent, new RoutedEventHandler(MoveHero), true);
-
-                        switch (tile.Type)
+                        Image Img = new Image();
+                        BitmapImage myBitmapImage = new BitmapImage();
+                        switch (tile.Skin)
                         {
-                            case TileType.Grass:
-                                b.Background = Brushes.LightGreen;
-                                DisplayInfo(b);
+                            case TileSkin.Grass:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\grass.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
                                 break;
-                            case TileType.Water:
-                                b.Background = Brushes.Blue;
-                                DisplayInfo(b);
+                            case TileSkin.Water:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\water.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
                                 break;
-                            case TileType.Forest:
-                                b.Background = Brushes.DarkGreen;
-                                DisplayInfo(b);
+                            case TileSkin.Forest:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\forest.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
                                 break;
-                            case TileType.Castle:
+                            case TileSkin.Castle:
                                 b.Background = Brushes.Violet;
                                 DisplayInfo(b);
                                 break;
-                            case TileType.Enemy:
-                                b.Background = Brushes.Red;
-                                DisplayInfo(b);
+                            case TileSkin.Skeletton:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\skeletton.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
                                 break;
-                            case TileType.Hero:
-                                b.Background = Brushes.Violet;
-                                DisplayInfo(b);
+                            case TileSkin.Mummy:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\mummy.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
+                                break;
+                            case TileSkin.Vampire:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\vampire.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
+                                break;
+                            case TileSkin.Hero:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\hero.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
                                 break;
                         }
                     }
@@ -151,19 +194,19 @@ namespace HOMM
 
                 Tile new_tile = Map[new_heroX, new_heroY];
 
-                if ((new_tile.Type == TileType.Water) || (new_tile.Type == TileType.Forest) || (new_tile.Type == TileType.Castle))
+                if ((new_tile.Skin == TileSkin.Water) || (new_tile.Skin == TileSkin.Forest) || (new_tile.Skin == TileSkin.Castle))
                 {
                     //do nothing
                 }
-                else if (new_tile.Type == TileType.Grass)
+                else if (new_tile.Skin == TileSkin.Grass)
                 {
-                    Map[heroX, heroY] = new Tile(TileType.Grass, new Tuple<int, int>(heroX, heroY));
+                    Map[heroX, heroY] = new Tile(TileSkin.Grass, new Tuple<int, int>(heroX, heroY));
                     heroX = new_heroX;
                     heroY = new_heroY;
-                    Map[heroX, heroY] = new Tile(TileType.Hero, new Tuple<int, int>(heroX, heroY));
+                    Map[heroX, heroY] = new Tile(TileSkin.Hero, new Tuple<int, int>(heroX, heroY));
                     Draw();
                 }
-                else if (new_tile.Type == TileType.Enemy)
+                else if (EnemyType.IsDefined(new_tile.Skin))
                 {
                     EnemyEncountered?.Invoke(new_tile, e);
                 }
@@ -174,6 +217,7 @@ namespace HOMM
             Point pos = Mouse.GetPosition(uniformGrid); // координаты мыши внутри грида
 
             if (pos.Y <= 0) // вверх
+                
                 CameraY--;
             else if (pos.Y >= MapSquare.Height - 1) //вниз
                 CameraY++;
