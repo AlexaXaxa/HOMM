@@ -8,9 +8,9 @@ namespace HOMM
 {
     public class BattleStack : IStack
     {
-        public EnemyType Type { get; set; }
+        public TileSkin Type { get; set; }
         public int Amount { get; set; }
-        public BattleStack(EnemyType type, int amount)
+        public BattleStack(TileSkin type, int amount)
         {
             Type = type;
             Amount = amount;

@@ -27,10 +27,12 @@ namespace HOMM
         int viewYSize_Tile;
         int viewXSize_Tile;
         int TileSize_Px;
-        EnemyType enemyType;
-        int TroopsCount;
-        TileSkin Skin;
-
+        TileSkin enemyType;
+        int TroopsCountTot;
+        TileSkin EnemySkin;
+        int CameraX;
+        int CameraY;
+        
         public BattleView(int tileSize_Px, double YGameRoot_Px, double XGameRoot_Px, Tile EnemyTile_WithStack)
         {
             InitializeComponent();
@@ -39,12 +41,14 @@ namespace HOMM
             viewYSize_Tile = (int)((YGameRoot_Px) / TileSize_Px);
             viewXSize_Tile = (int)((XGameRoot_Px) / TileSize_Px);
 
-            Skin = EnemyTile_WithStack.Skin;
+            EnemySkin = EnemyTile_WithStack.Skin;
             enemyType = EnemyTile_WithStack.EnemyStack.Type;
             //amount of troops on Adventurefield (in total)
-            TroopsCount = EnemyTile_WithStack.EnemyStack.Amount; 
+            TroopsCountTot = EnemyTile_WithStack.EnemyStack.Amount; 
 
             this.Loaded += BattleView_Loaded;
+            CameraX = (int)viewXSize_Tile / 2;
+            CameraY = (int)viewYSize_Tile / 2;
         }
         private void BattleView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -53,6 +57,7 @@ namespace HOMM
 
             BattleMap = CreateBattleMap();
             CreateEnemyMap();
+            CreateTroopsMap();
             Draw();
         }
         public void Update()
@@ -66,6 +71,30 @@ namespace HOMM
             t.Text = b.Tile.Coords.Item1 +","+ b.Tile.Coords.Item2.ToString();
             b.Child = t;
         }
+        private void MoveHero(object sender, RoutedEventArgs e)
+        {
+            if (sender is CustomBorder border)
+            {
+                int new_heroX = border.Tile.Coords.Item1;
+                int new_heroY = border.Tile.Coords.Item2;
+
+                Tile new_tile = BattleMap[new_heroX, new_heroY];
+
+                if ((new_tile.Skin == TileSkin.Water) || (new_tile.Skin == TileSkin.Forest) || (new_tile.Skin == TileSkin.Castle))
+                {
+                    //do nothing
+                }
+                else if (new_tile.Skin == TileSkin.Grass)
+                {
+                    BattleMap[heroX, heroY] = new Tile(TileSkin.Grass, new Tuple<int, int>(heroX, heroY));
+                    heroX = new_heroX;
+                    heroY = new_heroY;
+                    BattleMap[heroX, heroY] = new Tile(TileSkin.Hero, new Tuple<int, int>(heroX, heroY));
+                    Draw();
+                }
+
+            }
+        }
         public void Draw()
         {
             uniformGrid.Children.Clear();
@@ -75,8 +104,8 @@ namespace HOMM
             {
                 for (int x = 0; x < viewXSize_Tile; x++)
                 {
-                    int mapX = x;
-                    int mapY = y;
+                    int mapX = CameraX + x - viewXSize_Tile / 2; 
+                    int mapY = CameraY + y - viewYSize_Tile / 2; ;
 
                     CustomBorder b = new CustomBorder();
                     b.Width = TileSize_Px;
@@ -95,13 +124,17 @@ namespace HOMM
                     {
                         Tile tile = BattleMap[mapX, mapY];
                         b.Tile = tile;
+                        b.AddHandler(Border.MouseLeftButtonDownEvent, new RoutedEventHandler(MoveHero), true);
                         Image Img = new Image();
                         BitmapImage myBitmapImage = new BitmapImage();
                         switch (tile.Skin)
                         {
                             case TileSkin.Grass:
-                                b.Background = Brushes.LightGreen;
-                                DrawNumber(b);
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\grass.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
                                 break;
                             case TileSkin.Water:
                                 b.Background = Brushes.Blue;
@@ -130,7 +163,7 @@ namespace HOMM
                                 Img.Source = myBitmapImage;
                                 b.Child = Img;
                                 break;
-                            case TileSkin.Skeletton:
+                            case TileSkin.Skeleton:
                                 myBitmapImage.BeginInit();
                                 myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\skeletton.png");
                                 myBitmapImage.EndInit();
@@ -140,6 +173,13 @@ namespace HOMM
                             case TileSkin.Mummy:
                                 myBitmapImage.BeginInit();
                                 myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\mummy.png");
+                                myBitmapImage.EndInit();
+                                Img.Source = myBitmapImage;
+                                b.Child = Img;
+                                break;
+                            case TileSkin.Bone_Dragon:
+                                myBitmapImage.BeginInit();
+                                myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\bone_dragon.png");
                                 myBitmapImage.EndInit();
                                 Img.Source = myBitmapImage;
                                 b.Child = Img;
@@ -156,16 +196,28 @@ namespace HOMM
         }
         public void CreateEnemyMap()
         {
-            int stack = TroopsCount / viewYSize_Tile;
+            int stack = TroopsCountTot / viewYSize_Tile-4;
 
             for (int y = 0; y < viewYSize_Tile; y=y+4)
             {
                 Tile enemy = new Tile(
-                    Skin, 
-                    new Tuple<int, int>(viewXSize_Tile, y),
+                    EnemySkin, 
+                    new Tuple<int, int>(viewXSize_Tile - 2, y),
                     new BattleStack(enemyType, stack));
 
                 BattleMap[viewXSize_Tile - 2, y] = enemy;
+            }
+        }
+        public void CreateTroopsMap()
+        {
+            int y = 0;
+            foreach (Troops t in Globals.Inventory._troops)
+            {
+                Tile troop = new Tile(
+                    (TileSkin)t.Type, new Tuple<int, int>(1, y), new BattleStack((TileSkin)t.Type, t.Amount));
+                BattleMap[1, y] = troop;
+                y = y + 4;
+
             }
         }
         Tile[,] CreateBattleMap()

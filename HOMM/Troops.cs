@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace HOMM
 {
-    public class Stack:IStack
+
+    public class Troops
     {
-        public TileSkin Type{get;set;}
-        public int Amount { get; set; }
-        public Stack(TileSkin type, int amount)
+
+        public int Amount;
+        public TileSkin Type;
+        public Troops(TileSkin type, int amount)
         {
-            Type = type;
             Amount = amount;
+            Type = type;
         }
+
     }
 }

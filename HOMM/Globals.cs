@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace HOMM
 {
-    public interface IStack
+    public static class Globals
     {
-        public TileSkin Type { get; set; }
-        public int Amount { get; set; }
+        public static Inventory Inventory;
     }
 }

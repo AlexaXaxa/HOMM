@@ -15,9 +15,12 @@ namespace HOMM
 
         Castle,
         Enemy,
-        Skeletton, 
+        Skeleton,
+        Zombie,
         Mummy,
         Vampire,
+        Linch,
+        Bone_Dragon,
 
         Hero
     }

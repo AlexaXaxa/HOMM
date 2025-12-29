@@ -33,6 +33,12 @@ namespace HOMM
         int CameraY;
         int MapSize_Tile;
         public event EventHandler EnemyEncountered;
+        int toggle = 1;
+        int day = 0;
+        int week = 0;
+        int month = 0;
+        
+    
         public AdventureView(Tile[,] map, double minimumSizeOfsceen, int tileSize_Px, int mapSize_Tile)
         {
             InitializeComponent();
@@ -59,18 +65,32 @@ namespace HOMM
 
             viewSize_Tile = (int)(viewSize_Px / tileSize_Px);
 
+            //Start with 3 Bone Dragons
+            Inventory inventory = new Inventory();
+            Globals.Inventory = inventory;
+            Globals.Inventory.Add(TileSkin.Skeleton, 10);
+
             Draw();
             var window = Window.GetWindow(this);
             window.KeyDown += HeroFocus;
         }
-
-        private void HeroFocus(object sender, KeyEventArgs e)
+        public void DisplayInventory()
         {
-            if (e.Key == Key.H)
+            UnitsWrapPanel.Children.Clear();
+            foreach (Troops troop in Globals.Inventory._troops)
             {
-                CameraX = heroX;
-                CameraY = heroY;
+                //Width, Heoght?
+                StackPanel p = new StackPanel();
+                p.Orientation = Orientation.Horizontal;
+                TextBlock type = new TextBlock();
+                type.Text = troop.Type.ToString() + " ";
+                TextBlock amount = new TextBlock();
+                amount.Text = troop.Amount.ToString() + "   ";
+                p.Children.Add(type);
+                p.Children.Add(amount);
+                UnitsWrapPanel.Children.Add(p);
             }
+            
         }
 
         public void DisplayInfo(CustomBorder b)
@@ -151,7 +171,7 @@ namespace HOMM
                                 b.Background = Brushes.Violet;
                                 DisplayInfo(b);
                                 break;
-                            case TileSkin.Skeletton:
+                            case TileSkin.Skeleton:
                                 myBitmapImage.BeginInit();
                                 myBitmapImage.UriSource = new Uri(@"C:\Users\06aleden_edu.uppland\Source\Repos\HOMM_scenes\HOMM\img\skeletton.png");
                                 myBitmapImage.EndInit();
@@ -206,7 +226,7 @@ namespace HOMM
                     Map[heroX, heroY] = new Tile(TileSkin.Hero, new Tuple<int, int>(heroX, heroY));
                     Draw();
                 }
-                else if (EnemyType.IsDefined(new_tile.Skin))
+                else if (new_tile.EnemyStack != null)
                 {
                     EnemyEncountered?.Invoke(new_tile, e);
                 }
@@ -221,13 +241,68 @@ namespace HOMM
                 CameraY--;
             else if (pos.Y >= MapSquare.Height - 1) //вниз
                 CameraY++;
-            if (pos.X >= MapSquare.Width) // вправо
+            if (pos.X >= MapSquare.Width + MapSquare.Width*0.3) // вправо
                 CameraX++;
             else if (pos.X <= 0) // влево
                 CameraX--;
 
             Draw();
+            DisplayInventory();
         }
-  
+
+        private void HeroFocus(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.H)
+            {
+                CameraX = heroX;
+                CameraY = heroY;
+            }
+        }
+        private void HeroFocus_Click(object sender, RoutedEventArgs e)
+        {
+            CameraX = heroX;
+            CameraY = heroY;
+        }
+        public void OnPanelClick(object sender, MouseButtonEventArgs e)
+        {
+            switch (toggle)
+            {
+                case 0:
+                    DayPanel.Visibility = Visibility.Collapsed;
+                    toggle++;
+                    UnitsWrapPanel.Visibility = Visibility.Visible;
+                    break;
+                case 1:
+                    UnitsWrapPanel.Visibility = Visibility.Collapsed;
+                    ResourcesPanel.Visibility = Visibility.Visible;
+                    toggle++;
+                    break;
+                case 2:
+                    ResourcesPanel.Visibility = Visibility.Collapsed;
+                    toggle = 0;
+                    DayPanel.Visibility = Visibility.Visible;
+                    break;
+
+
+            }
+
+        }
+        private void NextDay_click(object sender, RoutedEventArgs e)
+        {
+            day++;
+            if (day > 7)
+            {
+                day = 0;
+                week++;
+            }
+            if (week > 3)
+            {
+                week = 0;
+                month++;
+            }
+            Day.Text = day.ToString();
+            Week.Text = week.ToString();
+            Month.Text = month.ToString();
+        }
     }
 }

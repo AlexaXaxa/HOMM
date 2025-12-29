@@ -45,6 +45,10 @@ namespace HOMM
 
             SetView(adventureView);
             adventureView.EnemyEncountered += EnemyEncountered;
+
+         
+
+
             StartTimer();
             
         }
@@ -87,9 +91,9 @@ namespace HOMM
             }
 
             #region Enemy
-            map[5, 1] = new Tile(TileSkin.Skeletton, new Tuple<int, int>(5, 1), new Stack(EnemyType.Skeletton, 9));
-            map[6, 2] = new Tile(TileSkin.Mummy, new Tuple<int, int>(6, 2), new Stack(EnemyType.Mummy, 9));
-            map[3, 5] = new Tile(TileSkin.Vampire, new Tuple<int, int>(3, 5), new Stack(EnemyType.Vampire, 9));
+            map[5, 1] = new Tile(TileSkin.Skeleton, new Tuple<int, int>(5, 1), new Stack(TileSkin.Skeleton, 9));
+            map[6, 2] = new Tile(TileSkin.Mummy, new Tuple<int, int>(6, 2), new Stack(TileSkin.Mummy, 9));
+            map[3, 5] = new Tile(TileSkin.Vampire, new Tuple<int, int>(3, 5), new Stack(TileSkin.Vampire, 9));
             #endregion
 
             #region Water

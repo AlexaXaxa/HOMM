@@ -57,24 +57,23 @@
                     </Grid.RowDefinitions>
                     <!-- buttons-->
                     <UniformGrid Grid.Row="0" Rows="2" Columns="4">
-                        <Button Content="hero" />
+                        <Button Content="hero" Click="HeroFocus_Click" />
                         <Button/>
                         <Button/>
                         <Button/>
-                        <Button Content="next day"/>
+                        <Button Content="next day" Click="NextDay_click" />
                         <Button/>
                         <Button/>
                         <Button/>
                     </UniformGrid>
                     <!-- units/resourses/day -->
-                    <Grid Background="White" Grid.Row="1">
+                    <Grid Background="White" PreviewMouseLeftButtonUp="OnPanelClick" Grid.Row="1">
                         <!-- Юниты -->
-                        <UniformGrid x:Name="UnitsPanel">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="полурослики " HorizontalAlignment="Center"/>
-                                <TextBlock Text="10"/>
-                            </StackPanel>
-                        </UniformGrid>
+                      
+                        <WrapPanel Name="UnitsWrapPanel" Orientation="Horizontal">
+                           
+                        </WrapPanel>
+                      
 
                         <!-- Ресурсы -->
                         <UniformGrid x:Name="ResourcesPanel" Visibility="Collapsed">
@@ -107,7 +106,7 @@
                             </StackPanel>
                         </UniformGrid>
                         <!-- Day -->
-                        <UniformGrid x:Name="DayPanel" Visibility="Collapsed">
+                        <UniformGrid x:Name="DayPanel"  Visibility="Collapsed">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Month " HorizontalAlignment="Center"/>
                                 <TextBlock x:Name="Month" Text="0"/>
