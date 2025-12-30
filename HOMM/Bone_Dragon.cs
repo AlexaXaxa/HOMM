@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace HOMM
 {
-    public interface IEnemy
+    internal class Bone_Dragon : ICreature
     {
-        int Damage { get;}
-        int HP { get; }
+        public int Damage => 45;
+
+        public int HP => 150;
+
+        public int Speed => 25;
     }
 }

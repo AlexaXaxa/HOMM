@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace HOMM
 {
-    internal class Mummy: IEnemy
+    internal class Mummy: ICreature
     {
-        private int damage = 4;
-        private int hp = 25;
-        public int Damage => damage;
-        public int HP => hp;
-        public int Units;
-
+        public int Damage => 4;
+        public int HP => 25;
+        public int Speed => 4;
         public Mummy()
         {
 

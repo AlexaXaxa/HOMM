@@ -8,11 +8,12 @@ namespace HOMM
 {
     public class Stack:IStack
     {
-        public TileSkin Type{get;set;}
+        public TileSkin CreatureSkin{get;set;}
         public int Amount { get; set; }
+        public int Turn { get; set; }
         public Stack(TileSkin type, int amount)
         {
-            Type = type;
+            CreatureSkin = type;
             Amount = amount;
         }
     }

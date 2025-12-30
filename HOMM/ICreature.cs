@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace HOMM
 {
-    public interface IStack
+    public interface ICreature
+
     {
-        
-        public int Amount { get; set; }
-        public int Turn { get; set; }
+        int Damage { get;}
+        int HP { get; }
+
+        int Speed { get; }
     }
 }

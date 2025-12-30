@@ -28,28 +28,15 @@ namespace HOMM
     {
         public TileSkin Skin { get; set; }
         public Tuple<int, int> Coords;      
-        public IStack EnemyStack { get; set; }
+        public IStack Stack { get; set; }
 
         public Tile(TileSkin type, Tuple<int, int> coords, IStack stack = null)
         {
             Skin = type;
             Coords = coords;
-            EnemyStack = stack;
+            Stack = stack;
            
-            if(stack != null)
-            {
-                CreateTroops();
-            }
+           
         }
-        void CreateTroops()
-        {
-            //if(EnemyType == Mummy)
-            //{
-            //    Mummy mummy = new Mummy();
-                
-            //}
-        }
-
-
     }
 }

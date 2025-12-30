@@ -104,7 +104,7 @@ namespace HOMM
                 b.Child = p;
                 TextBlock t2 = new TextBlock();
                 t2.FontSize = 7;
-                t2.Text = b.Tile.EnemyStack.Type + " " + b.Tile.EnemyStack.Amount;
+                t2.Text = b.Tile.Skin + " " + b.Tile.Stack.Amount;
                 p.Children.Add(t);
                 p.Children.Add(t2);
                 return;
@@ -226,7 +226,7 @@ namespace HOMM
                     Map[heroX, heroY] = new Tile(TileSkin.Hero, new Tuple<int, int>(heroX, heroY));
                     Draw();
                 }
-                else if (new_tile.EnemyStack != null)
+                else if (new_tile.Stack != null)
                 {
                     EnemyEncountered?.Invoke(new_tile, e);
                 }
