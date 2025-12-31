@@ -61,7 +61,7 @@ namespace HOMM
         void StartTimer()
         {
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(160);
+            timer.Interval = TimeSpan.FromMilliseconds(160); //160
             timer.Tick += GameTick;
             timer.Start();
         }

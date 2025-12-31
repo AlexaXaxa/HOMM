@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace HOMM
     /// </summary>
     public partial class BattleView : UserControl, IUpdatable
     {
+        #region deklarations
         Tile[,] BattleMap;
         int heroX = 0;
         int heroY = 0;
@@ -37,6 +39,7 @@ namespace HOMM
         Tile currentTile;
         BattleStack currentBattleStack;
         int currentTurn;
+        #endregion
         public BattleView(int tileSize_Px, double YGameRoot_Px, double XGameRoot_Px, Tile EnemyTile_WithStack)
         {
             InitializeComponent();
@@ -77,21 +80,158 @@ namespace HOMM
                         {
                             currentTile = tile;
                             currentBattleStack = (BattleStack)currentTile.Stack;
+                            if (currentBattleStack.IsEnemy)
+                            {
+                                //currentBattleStack ходит сам
+                                EnemyMove(tile);
+                            }
                         }
                     }
-
-
                 }
             }
             else
             {
                 CreateNewOrder();
             }
-
-
             Draw();
-
         }
+
+        public void EnemyMove(Tile EnemyTile)
+        {
+            int current_Enemy_TileX = EnemyTile.Coords.Item1;
+            int current_Enemy_TileY = EnemyTile.Coords.Item2;
+          
+
+            //Loop through all friendly stacks and make a list of damage
+            List<int> damage = new List<int>();
+            foreach (Tile troop in BattleMap)
+            {
+                if (troop.Stack != null)
+                {
+                    BattleStack troopStack = (BattleStack)troop.Stack;
+                    if (troopStack.IsEnemy == false)
+                    {
+                        damage.Add(troopStack.Damage);
+                    }
+                }
+                
+            }
+            //target troop = most damage temporary
+            int maxdamage = damage.Max();
+
+            int new_EnemyX = current_Enemy_TileX;
+            int new_EnemyY = current_Enemy_TileY;
+            //find tile (battlestack) with maxdamage
+            Tile target_tile = null;
+            foreach (Tile tile in BattleMap)
+            {
+                if (tile.Stack != null)
+                {
+                    BattleStack troopStack = (BattleStack)tile.Stack;
+                    if (troopStack.IsEnemy == false)
+                    {
+                        if(troopStack.Damage == maxdamage)
+                        {
+                            target_tile = tile;
+
+                            int XTarget = target_tile.Coords.Item1;
+                            int YTarget = target_tile.Coords.Item2;
+
+                            int SpeedX = currentBattleStack.Speed;
+                            int SpeedY = currentBattleStack.Speed;
+                                                            
+
+
+                            #region define coords
+                            if (current_Enemy_TileX != XTarget)
+                            {
+                                if(XTarget< current_Enemy_TileX)
+                                {
+                                    if(current_Enemy_TileX - XTarget < SpeedX)
+                                    {
+                                        SpeedX = -(current_Enemy_TileX - XTarget);
+                                    }
+                                    else
+                                        SpeedX = -currentBattleStack.Speed;
+
+                                }
+                                else
+                                {
+                                    if (XTarget - current_Enemy_TileX < SpeedX)
+                                    {
+                                        SpeedX = XTarget - current_Enemy_TileX;
+                                    }
+                                    SpeedX = currentBattleStack.Speed;
+                                }
+                            }
+                            else
+                            {
+                                SpeedX = 0;
+                            }
+                            new_EnemyX = current_Enemy_TileX + SpeedX;
+
+
+                            if (current_Enemy_TileY != YTarget)
+                            {
+                                if (YTarget < current_Enemy_TileY) //vektor -
+                                {
+                                    if (current_Enemy_TileY - YTarget < SpeedY)
+                                    {
+                                        SpeedY = -(current_Enemy_TileY - YTarget);
+                                    }
+                                    else
+                                        SpeedY = -currentBattleStack.Speed;
+                                }
+                                else
+                                {
+                                    if (YTarget - current_Enemy_TileY < SpeedY)
+                                    {
+                                        SpeedY = YTarget - current_Enemy_TileY;
+                                    }
+                                }
+                            }
+                            else if (current_Enemy_TileY == YTarget)
+                            {
+                                SpeedY = 0;
+                            }
+                            new_EnemyY = current_Enemy_TileY + SpeedY;
+                            #endregion
+
+                            Tile new_tile = BattleMap[new_EnemyX, new_EnemyY];
+                            if (new_tile.Skin == TileSkin.Grass)
+                            {
+                                turns.Remove(currentTurn);
+                                currentBattleStack.Turn = 0;
+
+                                BattleMap[current_Enemy_TileX, current_Enemy_TileY] = new Tile(TileSkin.Grass, new Tuple<int, int>(current_Enemy_TileX, current_Enemy_TileY));
+                                current_Enemy_TileX = new_EnemyX;
+                                current_Enemy_TileY = new_EnemyY;
+                                BattleMap[current_Enemy_TileX, current_Enemy_TileY] = new Tile(currentTile.Skin, new Tuple<int, int>(new_EnemyX, new_EnemyY), currentBattleStack);
+
+                                Draw();
+                            }
+                            else if(((BattleStack)new_tile.Stack).IsEnemy)
+                            {
+                                //while (((BattleStack)new_tile.Stack).IsEnemy)
+                                //{
+
+                                //}
+                                turns.Remove(currentTurn);
+                                currentBattleStack.Turn = 0;
+                            }
+                            else //troop
+                            {
+                                //Damage to troop
+                            }
+
+                        }
+                    }
+                }
+
+            }
+                
+        } 
+
 
         public void CreateNewOrder()
         {
@@ -290,7 +430,7 @@ namespace HOMM
                 Tile enemy = new(
                     EnemySkin, 
                     new Tuple<int, int>(viewXSize_Tile - 2, y),
-                    new BattleStack(enemyType, stack)
+                    new BattleStack(enemyType, stack, true)
                     );
                 
                 BattleMap[viewXSize_Tile - 2, y] = enemy;

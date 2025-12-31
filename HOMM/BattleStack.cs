@@ -12,16 +12,17 @@ namespace HOMM
         public ICreature Prototype { get; }
         public int Amount { get; set; }
         public int Turn { get; set; }
+        public bool IsEnemy { get; set; }
         
         public int Speed { get; }
         public int Damage { get; }
         public int HP { get; }
 
-        public BattleStack(TileSkin creatureSkin, int amount, int turn = 0)
+        public BattleStack(TileSkin creatureSkin, int amount, bool isenemy = false)
         {
             
             Amount = amount;
-            Turn = turn;
+            IsEnemy = isenemy;
 
             Prototype = creatureSkin switch
             {

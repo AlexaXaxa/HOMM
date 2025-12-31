@@ -12,6 +12,6 @@ namespace HOMM
 
         public int HP => 4;
 
-        public int Speed => 10;
+        public int Speed => 3;
     }
 }
