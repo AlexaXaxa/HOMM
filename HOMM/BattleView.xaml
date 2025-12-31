@@ -10,6 +10,18 @@
         <UniformGrid Name="uniformGrid"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"/>
-        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70*"/>
+                <RowDefinition Height="30*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="Console" Grid.Row="1" FontSize="30">
+                <TextBlock.Background>
+                    <SolidColorBrush Opacity="0.24" Color="Beige" />
+                </TextBlock.Background>
+            </TextBlock>
+            
+        </Grid>
     </Grid>
 </UserControl>

@@ -221,7 +221,20 @@ namespace HOMM
                             }
                             else //troop
                             {
-                                //Damage to troop
+                                BattleMap[current_Enemy_TileX, current_Enemy_TileY] = new Tile(TileSkin.Grass, new Tuple<int, int>(current_Enemy_TileX, current_Enemy_TileY));
+                                current_Enemy_TileX = new_EnemyX-1;
+                                current_Enemy_TileY = new_EnemyY-1;
+                                BattleMap[current_Enemy_TileX, current_Enemy_TileY] = new Tile(currentTile.Skin, new Tuple<int, int>(new_EnemyX, new_EnemyY), currentBattleStack);
+
+                                
+                                EnemyTile.Stack.Attack(tile.Stack);
+
+                                //Damage troop
+                                Console.Text = null;
+                                string text = ($"{EnemyTile.Skin} damaging {tile.Skin}.\n{tile.Skin} -{currentBattleStack.TotDamage} HP. {tile.Stack.Amount} {tile.Skin} left ");
+                                Console.Text = text;
+                                turns.Remove(currentTurn);
+                                currentBattleStack.Turn = 0;
                             }
 
                         }
@@ -421,7 +434,7 @@ namespace HOMM
         }
         public void CreateEnemyMap()
         {
-            int stack = TroopsCountTot / viewYSize_Tile-4;
+            int stack = TroopsCountTot / (viewYSize_Tile/4);
         
             
             for (int y = 0; y < viewYSize_Tile; y=y+4)

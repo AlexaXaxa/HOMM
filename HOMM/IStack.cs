@@ -11,5 +11,7 @@ namespace HOMM
         
         public int Amount { get; set; }
         public int Turn { get; set; }
+        public void UpdateStack();
+        public void Attack(IStack stack);
     }
 }

@@ -16,5 +16,15 @@ namespace HOMM
             CreatureSkin = type;
             Amount = amount;
         }
+
+        public void UpdateStack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Attack(IStack stack)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

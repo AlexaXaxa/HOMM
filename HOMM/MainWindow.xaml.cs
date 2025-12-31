@@ -74,6 +74,8 @@ namespace HOMM
         void GameTick(object? sender, EventArgs e)
         {
             currentView?.Update();
+            
+            
         }
 
         Tile[,] CreateTestMap()
